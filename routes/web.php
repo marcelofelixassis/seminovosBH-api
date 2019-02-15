@@ -11,10 +11,10 @@
 |
 */
 
-$router->get('/api/cars/search/{vehicle}[/{conservation}[/{brand}[/{model}[/{city}[/{value1}[/{value2}[/{year1}[/{year2}[/{user}]]]]]]]]]',
+$router->get('/api/cars/search[/{params:.*}]',
     "CarsController@searchCars"
 );
 
-$router->get("/api/car/search/{cod}",
+$router->get("/api/car/search/{brand}/{model}/{year}/{cod}",
     "CarsController@searchOneCar"
 );
