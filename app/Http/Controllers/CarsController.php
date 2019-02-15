@@ -116,48 +116,52 @@ class CarsController extends Controller
        
         $doc = new \DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML(file_get_contents($url));
-        
+           
         $conteudoAcessorios = $doc->getElementsByTagName('div');
         foreach ($conteudoAcessorios as $div) {
             if($div->getAttribute('id') == "conteudoAcessorios")
             {
-                $firstDetails = $div->getElementsByTagName('div')->item(0)
-                ->getElementsByTagName('span')->item(0)->getElementsByTagName('ul');
-
-                if($firstDetails->item(0)->getElementsByTagName('li')->length < 3)
-                {
-                    $year = $firstDetails->item(0)->getElementsByTagName('li')->item(0)->nodeValue;
-                    $km = "0 km";
-                    $fuel = $firstDetails->item(0)->getElementsByTagName('li')->item(1)->nodeValue;
-                    $secondDetails = $div->getElementsByTagName('div')->item(2)->getElementsByTagName('ul');
-                    $thirdDetails = $div->getElementsByTagName('div')->item(3)->getElementsByTagName('ul');
-                } else {
-                    $year = $firstDetails->item(0)->getElementsByTagName('li')->item(0)->nodeValue;
-                    $km = $firstDetails->item(0)->getElementsByTagName('li')->item(1)->nodeValue;
-                    $fuel = $firstDetails->item(0)->getElementsByTagName('li')->item(2)->nodeValue;
-                    $secondDetails = $div->getElementsByTagName('div')->item(1)->getElementsByTagName('ul');
-                    $thirdDetails = $div->getElementsByTagName('div')->item(2)->getElementsByTagName('ul');
-                }
-
-                $color = $firstDetails->item(1)->getElementsByTagName('li')->item(1)->nodeValue;
-
-                $details = "";
-                foreach ($secondDetails as $second) {
-                    $details .= $second->nodeValue;
-                }
-                $detailsArray = explode(PHP_EOL, $details);
-
-                $note = $thirdDetails->item(0)->getElementsByTagName('p')->item(0)->nodeValue;
-
                 $car = new CarEntity();
-                $car->setYear($year);
-                $car->setKm($km);
-                $car->setFuel($fuel);
-                $car->setColor($color);
-                $car->setDetails($detailsArray);
-                $car->setNote($note);
+                $alls = $div->getElementsByTagName('div');
+                foreach ($alls as $all) {
+                    if($all->getAttribute('class') == "info-detalhes")
+                    {
+                        $title = $all->getElementsByTagName('h2')->item(0)->nodeValue;
+                        if($title == "Detalhes")
+                        {
+                            $firstDetails = $all->getElementsByTagName('span')->item(0)->getElementsByTagName('ul');
+                            if($firstDetails->item(0)->getElementsByTagName('li')->length < 3)
+                            {
+                                $car->setYear($firstDetails->item(0)->getElementsByTagName('li')->item(0)->nodeValue);
+                                $car->setKm("0 km");
+                                $car->setFuel($firstDetails->item(0)->getElementsByTagName('li')->item(1)->nodeValue);
+                            } else {
+                                $car->setYear($firstDetails->item(0)->getElementsByTagName('li')->item(0)->nodeValue);
+                                $car->setKm($firstDetails->item(0)->getElementsByTagName('li')->item(1)->nodeValue);
+                                $car->setFuel($firstDetails->item(0)->getElementsByTagName('li')->item(2)->nodeValue);
+                            }
 
-                return response()->json($car->toArray());
+                            $car->setColor($firstDetails->item(1)->getElementsByTagName('li')->item(1)->nodeValue);
+                        }
+                        elseif($title == "Acessórios")
+                        {
+                            $secondDetails = $all->getElementsByTagName('ul');
+
+                            $details = "";
+                            foreach ($secondDetails as $second) {
+                                $details .= $second->nodeValue;
+                            }
+                            $detailsArray = explode(PHP_EOL, $details);
+
+                            $car->setDetails($detailsArray);
+                        }
+                        elseif($title == "Observações")
+                        {
+                            $car->setNote($all->getElementsByTagName('ul')->item(0)->nodeValue);
+                            return response()->json($car->toArray());
+                        }
+                    }
+                }
             }
         }
     }
