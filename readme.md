@@ -19,3 +19,30 @@ If you discover a security vulnerability within Lumen, please send an e-mail to 
 ## License
 
 The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Usage
+
+
+```sh
+$ composer install
+$ php -S 127.0.0.1:port -t public
+```
+
+## Routes
+http://127.0.0.1:port/api/cars/search
+
+http://127.0.0.1:port/api/car/search
+
+## Exemples
+##### Search Cars
+parameter sequence = veiculo/estado-conservacao/marca/modelo/cidade/valor1/valor2/ano1/ano2/usuario
+
+http://127.0.0.1:3000/api/cars/search/carro//Fiat/1225
+
+http://127.0.0.1:3000/api/cars/search/carro/0km/Fiat/1225
+
+http://127.0.0.1:3000/api/cars/search/carro/seminovo/Fiat/1225/2700
+
+parameter sequence = marca/modelo/ano/codigo
+
+http://127.0.0.1:3000/api/car/search/BMW/328i/2013-2014/2474199
