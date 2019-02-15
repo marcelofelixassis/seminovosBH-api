@@ -42,6 +42,7 @@ class CarsController extends Controller
     private function numberOfPages($doc)
     {
         $pTags = $doc->getElementsByTagName("p");
+        $final = 1;
         foreach ($pTags as $pTag) {
             if($pTag->getAttribute("class") == "paginacao-resumo")
             {
@@ -91,8 +92,10 @@ class CarsController extends Controller
                     $year = $car->getElementsByTagName("dd")->item(2)->getElementsByTagName("p")->item(0)->nodeValue;
                     
                     $car = new CarEntity();
-                    $car->setModel($titleAndValue[0]);
-                    $car->setValue($titleAndValue[1]);
+                    if(array_key_exists(0, $titleAndValue))
+                        $car->setModel($titleAndValue[0]);
+                    if(array_key_exists(1, $titleAndValue))
+                        $car->setValue($titleAndValue[1]);
                     $car->setKm($km);
                     $car->setYear($year);
 
